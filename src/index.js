@@ -64,14 +64,18 @@ window.addEventListener('resize', onWindowResize);
 // AGENT
 const agentHeight = 1.0;
 const agentRadius = 0.25;
-const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
-agent.position.y = agentHeight / 2;
-const agentGroup = new THREE.Group();
+const agent1 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
+agent1.position.y = agentHeight / 2;
+agent1.position.z = 8;
+agent1.position.x = 0;
+agent1.position.y = 1.5;
+scene.add(agent1);
+/* const agentGroup = new THREE.Group();
 agentGroup.add(agent);
 agentGroup.position.z = 8;
 agentGroup.position.x = 0;
 agentGroup.position.y = 1;
-scene.add(agentGroup);
+scene.add(agentGroup); */
 
 // LOAD LEVEL
 const loader = new GLTFLoader();
@@ -99,12 +103,13 @@ loader.load('./glb/demo-level-navmesh.glb', (gltf) => {
 });
 
 // RAYCASTING
-const raycaster = new THREE.Raycaster(); // create once
-const clickMouse = new THREE.Vector2();  // create once
+const raycaster = new THREE.Raycaster();
+const clickMouse = new THREE.Vector2();
 
 function intersect(pos) {
     raycaster.setFromCamera(pos, camera);
     return raycaster.intersectObjects(scene.children);
+    
 }
 window.addEventListener('click', event => {
     // THREE RAYCASTER
@@ -114,11 +119,11 @@ window.addEventListener('click', event => {
     const found = intersect(clickMouse);
     if (found.length > 0) {
         let target = found[0].point;
-        const agentpos = agentGroup.position;
+        const agentpos = agent1.position;
         // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
         // console.log(`target: ${JSON.stringify(target)}`);
 
-        groupID = pathfinding.getGroup(ZONE, agentGroup.position);
+        groupID = pathfinding.getGroup(ZONE, agent1.position);
         // find closest node to agent, just in case agent is out of bounds
         const closest = pathfinding.getClosestNode(agentpos, ZONE, groupID);
         navpath = pathfinding.findPath(closest.centroid, target, ZONE, groupID);
@@ -137,12 +142,12 @@ function move ( delta ) {
     if ( !navpath || navpath.length <= 0 ) return
 
     let targetPosition = navpath[ 0 ];
-    const distance = targetPosition.clone().sub( agentGroup.position );
+    const distance = targetPosition.clone().sub( agent1.position );
 
-    if (distance.lengthSq() > 0.05 * 0.05) {
+    if (distance.lengthSq() > 0.05 * 0.05 ) {
         distance.normalize();
         // Move player to target
-        agentGroup.position.add( distance.multiplyScalar( delta * SPEED ) );
+        agent1.position.add(distance.multiplyScalar(delta * SPEED));
     } else {
         // Remove node from the path we calculated
         navpath.shift();
