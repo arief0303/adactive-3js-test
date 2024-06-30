@@ -10,4 +10,4 @@ See:
 
 [UPBGE](https://upbge.org/) - used for building level mesh and the navmesh
 
-GLB files (level and navmesh) are contained in `dist/glb`.
+GLB files (level and navmesh) are contained in `public/glb`.
