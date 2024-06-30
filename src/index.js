@@ -62,10 +62,6 @@ function onWindowResize() {
 }
 window.addEventListener('resize', onWindowResize);
 
-//agent 1 red
-//agent 2 blue
-//agent 3 green
-
 // AGENT 1
 const agentHeight = 1.0;
 const agentRadius = 0.25;
@@ -73,22 +69,22 @@ const agent1 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadiu
 agent1.position.y = agentHeight / 2;
 agent1.position.z = 8;
 agent1.position.x = 0;
-agent1.position.y = 1.5;
+agent1.position.y = 14;
 scene.add(agent1);
 
 // AGENT 2
 const agent2 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'blue' }));
 agent2.position.y = agentHeight / 2;
-agent2.position.z = 10; // Different Z position for distinction
-agent2.position.x = 5; // Different X position for distinction
+agent2.position.z = 18; // Different Z position for distinction
+agent2.position.x = 17; // Different X position for distinction
 agent2.position.y = 1.5;
 scene.add(agent2);
 
 // AGENT 3
 const agent3 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'red' }));
 agent3.position.y = agentHeight / 2;
-agent3.position.z = 12; // Different Z position for distinction
-agent3.position.x = -5; // Different X position for distinction
+agent3.position.z = -10; // Different Z position for distinction
+agent3.position.x = 10; // Different X position for distinction
 agent3.position.y = 1.5;
 scene.add(agent3);
 
