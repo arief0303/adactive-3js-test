@@ -160,6 +160,6 @@ let animate = () => {
     move(clock.getDelta());
     orbitControls.update()
     renderer.render(scene, camera);
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(animate);
 };
 animate();
