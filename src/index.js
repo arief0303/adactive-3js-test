@@ -118,15 +118,16 @@ loader.load('./glb/demo-level.glb', (gltf) => {
 
 // INITIALIZE THREE-PATHFINDING
 const pathfinding = new Pathfinding();
-const pathfindinghelper = new PathfindingHelper();
-scene.add(pathfindinghelper);
+const pathfindingHelper1 = new PathfindingHelper(); // First instance
+const pathfindingHelper2 = new PathfindingHelper(); // Second instance
+scene.add(pathfindingHelper1);
+scene.add(pathfindingHelper2); // Add the second instance to the scene as well
 const ZONE = 'level1';
 const SPEED = 5;
 let navmesh;
 let groupID;
 let navpath;
 loader.load('./glb/demo-level-navmesh.glb', (gltf) => {
-    // scene.add(gltf.scene);
     gltf.scene.traverse((node) => {
         if (!navmesh && node.isObject3D && node.children && node.children.length > 0) {
             navmesh = node.children[0];
@@ -144,7 +145,7 @@ function intersect(pos) {
     return raycaster.intersectObjects(scene.children);
 
 }
-window.addEventListener('click', event => {
+/* window.addEventListener('click', event => {
     // THREE RAYCASTER
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -168,7 +169,7 @@ window.addEventListener('click', event => {
             pathfindinghelper.setPath(navpath);
         }
     }
-})
+}) */
 
 function calculateAndShowPaths() {
     // Ensure navmesh is loaded
@@ -187,31 +188,31 @@ function calculateAndShowPaths() {
     // Calculate path from agent2 to agent3
     let groupIDAgent3 = pathfinding.getGroup(ZONE, agent3.position);
     let closestNodeAgent3 = pathfinding.getClosestNode(agent3.position, ZONE, groupIDAgent3);
-    let pathAgent2ToAgent3 = pathfinding.findPath(closestNodeAgent2.centroid, agent3.position, ZONE, groupIDAgent2);
+    let pathAgent2ToAgent3 = pathfinding.findPath(closestNodeAgent2.centroid, agent3.position, ZONE, groupIDAgent3);
 
-    // Use PathfindingHelper to show the path from agent1 to agent2
-    pathfindinghelper.reset(); // Clear previous paths
-    pathfindinghelper.setPlayerPosition(agent1.position);
-    pathfindinghelper.setTargetPosition(agent2.position);
-    pathfindinghelper.setPath(pathAgent1ToAgent2);
+    // Use PathfindingHelper1 to show the path from agent1 to agent2
+    pathfindingHelper1.reset(); // Clear previous paths for pathfindingHelper1
+    pathfindingHelper1.setPlayerPosition(agent1.position);
+    pathfindingHelper1.setTargetPosition(agent2.position);
+    pathfindingHelper1.setPath(pathAgent1ToAgent2);
     // Assuming a method to visualize or draw the path exists
-    if (typeof pathfindinghelper.drawPath === 'function') {
-        pathfindinghelper.drawPath(); // Replace 'update' with the correct method to visualize the path
+    if (typeof pathfindingHelper1.drawPath === 'function') {
+        pathfindingHelper1.drawPath(); // Use drawPath method of pathfindingHelper1
     } else {
-        console.error('pathfindinghelper.drawPath is not a function');
+        console.error('pathfindingHelper1.drawPath is not a function');
     }
 
-    // After a short delay, show the path from agent2 to agent3
+    // After a short delay, use PathfindingHelper2 to show the path from agent2 to agent3
     setTimeout(() => {
-        pathfindinghelper.reset(); // Clear previous paths
-        pathfindinghelper.setPlayerPosition(agent2.position);
-        pathfindinghelper.setTargetPosition(agent3.position);
-        pathfindinghelper.setPath(pathAgent2ToAgent3);
-        // Again, replace 'update' with the correct method
-        if (typeof pathfindinghelper.drawPath === 'function') {
-            pathfindinghelper.drawPath(); // Adjust method name as necessary
+        pathfindingHelper2.reset(); // Clear previous paths for pathfindingHelper2
+        pathfindingHelper2.setPlayerPosition(agent2.position);
+        pathfindingHelper2.setTargetPosition(agent3.position);
+        pathfindingHelper2.setPath(pathAgent2ToAgent3);
+        // Again, ensure the drawPath method exists
+        if (typeof pathfindingHelper2.drawPath === 'function') {
+            pathfindingHelper2.drawPath(); // Use drawPath method of pathfindingHelper2
         } else {
-            console.error('pathfindinghelper.drawPath is not a function');
+            console.error('pathfindingHelper2.drawPath is not a function');
         }
     }, 2000); // Adjust delay as needed
 }
