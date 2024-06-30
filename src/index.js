@@ -185,11 +185,6 @@ function calculateAndShowPaths() {
     let closestNodeAgent2 = pathfinding.getClosestNode(agent2.position, ZONE, groupIDAgent2);
     let pathAgent1ToAgent2 = pathfinding.findPath(closestNodeAgent1.centroid, agent2.position, ZONE, groupIDAgent1);
 
-    // Calculate path from agent2 to agent3
-    let groupIDAgent3 = pathfinding.getGroup(ZONE, agent3.position);
-    let closestNodeAgent3 = pathfinding.getClosestNode(agent3.position, ZONE, groupIDAgent3);
-    let pathAgent2ToAgent3 = pathfinding.findPath(closestNodeAgent2.centroid, agent3.position, ZONE, groupIDAgent3);
-
     // Use PathfindingHelper1 to show the path from agent1 to agent2
     pathfindingHelper1.reset(); // Clear previous paths for pathfindingHelper1
     pathfindingHelper1.setPlayerPosition(agent1.position);
@@ -202,19 +197,22 @@ function calculateAndShowPaths() {
         console.error('pathfindingHelper1.drawPath is not a function');
     }
 
-    // After a short delay, use PathfindingHelper2 to show the path from agent2 to agent3
-    setTimeout(() => {
-        pathfindingHelper2.reset(); // Clear previous paths for pathfindingHelper2
-        pathfindingHelper2.setPlayerPosition(agent2.position);
-        pathfindingHelper2.setTargetPosition(agent3.position);
-        pathfindingHelper2.setPath(pathAgent2ToAgent3);
-        // Again, ensure the drawPath method exists
-        if (typeof pathfindingHelper2.drawPath === 'function') {
-            pathfindingHelper2.drawPath(); // Use drawPath method of pathfindingHelper2
-        } else {
-            console.error('pathfindingHelper2.drawPath is not a function');
-        }
-    }, 2000); // Adjust delay as needed
+    // Calculate path from agent2 to agent3 immediately after
+    let groupIDAgent3 = pathfinding.getGroup(ZONE, agent3.position);
+    let closestNodeAgent3 = pathfinding.getClosestNode(agent3.position, ZONE, groupIDAgent3);
+    let pathAgent2ToAgent3 = pathfinding.findPath(closestNodeAgent2.centroid, agent3.position, ZONE, groupIDAgent3);
+
+    // Use PathfindingHelper2 to show the path from agent2 to agent3
+    pathfindingHelper2.reset(); // Clear previous paths for pathfindingHelper2
+    pathfindingHelper2.setPlayerPosition(agent2.position);
+    pathfindingHelper2.setTargetPosition(agent3.position);
+    pathfindingHelper2.setPath(pathAgent2ToAgent3);
+    // Again, ensure the drawPath method exists
+    if (typeof pathfindingHelper2.drawPath === 'function') {
+        pathfindingHelper2.drawPath(); // Use drawPath method of pathfindingHelper2
+    } else {
+        console.error('pathfindingHelper2.drawPath is not a function');
+    }
 }
 
 // let lastPosition = new THREE.Vector3(); // Initialize with a vector to store the last position
