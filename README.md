@@ -1,4 +1,4 @@
-# vanilla-threejs-navmesh-demo
+# Adactive Three.js Pathfinding Demo
 
 Use `yarn` and then `yarn start`.
 
