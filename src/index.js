@@ -154,12 +154,12 @@ function move ( delta ) {
     }
 }
 
-// GAMELOOP
+// ANIMATE
 const clock = new THREE.Clock();
-let gameLoop = () => {
+let animate = () => {
     move(clock.getDelta());
     orbitControls.update()
     renderer.render(scene, camera);
     requestAnimationFrame(gameLoop);
 };
-gameLoop();
+animate();
