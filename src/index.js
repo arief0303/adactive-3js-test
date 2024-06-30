@@ -62,6 +62,10 @@ function onWindowResize() {
 }
 window.addEventListener('resize', onWindowResize);
 
+//agent 1 red
+//agent 2 blue
+//agent 3 green
+
 // AGENT 1
 const agentHeight = 1.0;
 const agentRadius = 0.25;
@@ -71,17 +75,6 @@ agent1.position.z = 8;
 agent1.position.x = 0;
 agent1.position.y = 1.5;
 scene.add(agent1);
-/* const agentGroup = new THREE.Group();
-agentGroup.add(agent);
-agentGroup.position.z = 8;
-agentGroup.position.x = 0;
-agentGroup.position.y = 1;
-scene.add(agentGroup); */
-
-// Create TransformControls and attach it to agent1
-const transformControls1 = new TransformControls(camera, renderer.domElement);
-transformControls1.attach(agent1);
-scene.add(transformControls1);
 
 // AGENT 2
 const agent2 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'blue' }));
@@ -91,11 +84,6 @@ agent2.position.x = 5; // Different X position for distinction
 agent2.position.y = 1.5;
 scene.add(agent2);
 
-// Create TransformControls and attach it to agent1
-const transformControls2 = new TransformControls(camera, renderer.domElement);
-transformControls2.attach(agent2);
-scene.add(transformControls2);
-
 // AGENT 3
 const agent3 = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'red' }));
 agent3.position.y = agentHeight / 2;
@@ -104,11 +92,17 @@ agent3.position.x = -5; // Different X position for distinction
 agent3.position.y = 1.5;
 scene.add(agent3);
 
-// Create TransformControls and attach it to agent3
-const transformControls3 = new TransformControls(camera, renderer.domElement);
-transformControls3.attach(agent3);
-scene.add(transformControls3);
+function createAndAttachTransformControls(agent, camera, renderer, scene) {
+    const transformControls = new TransformControls(camera, renderer.domElement);
+    transformControls.attach(agent);
+    scene.add(transformControls);
+    return transformControls;
+}
 
+// Usage
+createAndAttachTransformControls(agent1, camera, renderer, scene);
+createAndAttachTransformControls(agent2, camera, renderer, scene);
+createAndAttachTransformControls(agent3, camera, renderer, scene);
 
 // LOAD LEVEL
 const loader = new GLTFLoader();
@@ -185,16 +179,15 @@ function calculateAndShowPaths() {
     let closestNodeAgent2 = pathfinding.getClosestNode(agent2.position, ZONE, groupIDAgent2);
     let pathAgent1ToAgent2 = pathfinding.findPath(closestNodeAgent1.centroid, agent2.position, ZONE, groupIDAgent1);
 
-    // Use PathfindingHelper1 to show the path from agent1 to agent2
-    pathfindingHelper1.reset(); // Clear previous paths for pathfindingHelper1
-    pathfindingHelper1.setPlayerPosition(agent1.position);
-    pathfindingHelper1.setTargetPosition(agent2.position);
-    pathfindingHelper1.setPath(pathAgent1ToAgent2);
-    // Assuming a method to visualize or draw the path exists
-    if (typeof pathfindingHelper1.drawPath === 'function') {
-        pathfindingHelper1.drawPath(); // Use drawPath method of pathfindingHelper1
+    // Check if a path was found from agent1 to agent2
+    if (!pathAgent1ToAgent2 || pathAgent1ToAgent2.length === 0) {
+        console.warn('No path found from agent1 to agent2.');
     } else {
-        console.error('pathfindingHelper1.drawPath is not a function');
+        // Use PathfindingHelper1 to show the path from agent1 to agent2
+        pathfindingHelper1.reset(); // Clear previous paths for pathfindingHelper1
+        pathfindingHelper1.setPlayerPosition(agent1.position);
+        pathfindingHelper1.setTargetPosition(agent2.position);
+        pathfindingHelper1.setPath(pathAgent1ToAgent2);
     }
 
     // Calculate path from agent2 to agent3 immediately after
@@ -202,16 +195,15 @@ function calculateAndShowPaths() {
     let closestNodeAgent3 = pathfinding.getClosestNode(agent3.position, ZONE, groupIDAgent3);
     let pathAgent2ToAgent3 = pathfinding.findPath(closestNodeAgent2.centroid, agent3.position, ZONE, groupIDAgent3);
 
-    // Use PathfindingHelper2 to show the path from agent2 to agent3
-    pathfindingHelper2.reset(); // Clear previous paths for pathfindingHelper2
-    pathfindingHelper2.setPlayerPosition(agent2.position);
-    pathfindingHelper2.setTargetPosition(agent3.position);
-    pathfindingHelper2.setPath(pathAgent2ToAgent3);
-    // Again, ensure the drawPath method exists
-    if (typeof pathfindingHelper2.drawPath === 'function') {
-        pathfindingHelper2.drawPath(); // Use drawPath method of pathfindingHelper2
+    // Check if a path was found from agent2 to agent3
+    if (!pathAgent2ToAgent3 || pathAgent2ToAgent3.length === 0) {
+        console.warn('No path found from agent2 to agent3.');
     } else {
-        console.error('pathfindingHelper2.drawPath is not a function');
+        // Use PathfindingHelper2 to show the path from agent2 to agent3
+        pathfindingHelper2.reset(); // Clear previous paths for pathfindingHelper2
+        pathfindingHelper2.setPlayerPosition(agent2.position);
+        pathfindingHelper2.setTargetPosition(agent3.position);
+        pathfindingHelper2.setPath(pathAgent2ToAgent3);
     }
 }
 
