@@ -190,7 +190,6 @@ function calculateAndShowPaths() {
 const clock = new THREE.Clock();
 let animate = () => {
     const delta = clock.getDelta();
-    moveSphereAlongPath(delta); // Move the sphere along its path
     calculateAndShowPaths(); // Existing functionality
     orbitControls.update();
     renderer.render(scene, camera);
