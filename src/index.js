@@ -10,9 +10,10 @@ scene.background = new THREE.Color(0xa8def0);
 
 // CAMERA
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.rotation.y = Math.PI;
 camera.position.y = 10;
 camera.position.z = 10;
-camera.position.x = 33;
+camera.position.x = 70;
 
 // RENDERER
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -32,6 +33,13 @@ orbitControls.minDistance = 5
 orbitControls.maxDistance = 60
 orbitControls.maxPolarAngle = Math.PI / 2 - 0.05 // prevent camera below ground
 orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
+
+// Update camera position
+camera.position.x = -camera.position.x;
+camera.position.z = -camera.position.z +50;
+
+// Important: Update OrbitControls to ensure smooth user interaction
+orbitControls.update();
 orbitControls.update();
 
 // LIGHTS
@@ -135,31 +143,6 @@ function intersect(pos) {
     return raycaster.intersectObjects(scene.children);
 
 }
-/* window.addEventListener('click', event => {
-    // THREE RAYCASTER
-    clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    const found = intersect(clickMouse);
-    if (found.length > 0) {
-        let target = found[0].point;
-        const agentpos = agent1.position;
-        // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
-        // console.log(`target: ${JSON.stringify(target)}`);
-
-        groupID = pathfinding.getGroup(ZONE, agent1.position);
-        // find closest node to agent, just in case agent is out of bounds
-        const closest = pathfinding.getClosestNode(agentpos, ZONE, groupID);
-        navpath = pathfinding.findPath(closest.centroid, target, ZONE, groupID);
-        if (navpath) {
-            // console.log(`navpath: ${JSON.stringify(navpath)}`);
-            pathfindinghelper.reset();
-            pathfindinghelper.setPlayerPosition(agentpos);
-            pathfindinghelper.setTargetPosition(target);
-            pathfindinghelper.setPath(navpath);
-        }
-    }
-}) */
 
 function calculateAndShowPaths() {
     // Ensure navmesh is loaded
@@ -203,47 +186,14 @@ function calculateAndShowPaths() {
     }
 }
 
-// let lastPosition = new THREE.Vector3(); // Initialize with a vector to store the last position
-
-// MOVEMENT ALONG PATH
-/* function move(delta) {
-    if (!navpath || navpath.length <= 0) return
-
-    let targetPosition = navpath[0];
-    const distance = targetPosition.clone().sub(agent1.position);
-
-    if (distance.lengthSq() > 0.05 * 0.05) {
-        distance.normalize();
-        // Move player to target
-        agent1.position.add(distance.multiplyScalar(delta * SPEED));
-    } else {
-        // Remove node from the path we calculated
-        navpath.shift();
-    }
-
-    agent1.updateMatrixWorld(); // Ensure the world matrix is updated
-    const worldPosition = new THREE.Vector3();
-    agent1.getWorldPosition(worldPosition);
-
-    // Check if the position has changed
-    if (!lastPosition.equals(worldPosition)) {
-        console.log(worldPosition); // Log the new position
-        lastPosition.copy(worldPosition); // Update the lastPosition for the next comparison
-    }
-} */
-
 // ANIMATE
 const clock = new THREE.Clock();
 let animate = () => {
-    // move(clock.getDelta());
-    calculateAndShowPaths();
-    orbitControls.update()
+    const delta = clock.getDelta();
+    moveSphereAlongPath(delta); // Move the sphere along its path
+    calculateAndShowPaths(); // Existing functionality
+    orbitControls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-
-    /*     agent1.updateMatrixWorld(); // Ensure the world matrix is updated
-        const worldPosition = new THREE.Vector3();
-        agent1.getWorldPosition(worldPosition);
-        console.log(worldPosition); */
 };
 animate();
